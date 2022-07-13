@@ -1,14 +1,14 @@
 <?php
 
-$wallet = 100;
-
 $board = [
     [' ', ' ', ' ', ' ', ' '],
+
     [' ', ' ', ' ', ' ', ' '],
+
     [' ', ' ', ' ', ' ', ' ']
 ];
 
-function displayBoard(array $board)
+function displayBoard(array $board): void
 {
     echo "\t" . implode('  ', $board[0]) . PHP_EOL;
     echo "\t" . implode('  ', $board[1]) . PHP_EOL;
@@ -17,16 +17,16 @@ function displayBoard(array $board)
 
 $symbols = [
     "\e[1;37;40mK\e[0m", "\e[1;33;40mA\e[0m", "\e[0;32;40mB\e[0m",
-    "\e[0;34;40m*\e[0m", "\e[0;31;40m$\e[0m"
+    "\e[0;34;40m*\e[0m", "\e[0;35;40mQ\e[0m",  "\e[0;31;40m$\e[0m"
 ];
 
-$multipliers = [1.2, 1.6 , 2, 2.5, 5];
+$multipliers = [0.5, 1, 1.2, 1.5, 1.7, 2];
 
 echo 'Welcome to slots game!' . PHP_EOL;
-echo PHP_EOL;
-echo "Your balance is $wallet" . PHP_EOL;
+$wallet = (int)readline('Deposit money: ');
+echo 'Your balance is: €' . number_format($wallet, 2) . PHP_EOL;
 $bet = (int)readline('Choose your bet size: ');
-$choice = (string)readline('Spin? (Enter/any): ');
+(string)readline('Press ENTER to spin: ');
 
 
 function checkingWinLines(array $timesChar, string $symbolString, int $bet, array $multipliers, array $symbols): float
@@ -46,7 +46,8 @@ function checkingWinLines(array $timesChar, string $symbolString, int $bet, arra
     return  0;
 }
 
-function swap(&$x, &$y) {
+function swap(&$x, &$y): void
+{
     $tmp = $x;
     $x = $y;
     $y = $tmp;
@@ -103,11 +104,15 @@ while (true) {
     if ($moneyWonTotalSpin == 0) {
         $wallet -= $bet;
         echo 'You lost!' . PHP_EOL;
+        if ($wallet < $bet) {
+            echo 'Not enough funds!' . PHP_EOL;
+            exit;
+        }
     } else {
         $wallet += $moneyWonTotalSpin;
-        echo 'Money won: ' . $moneyWonTotalSpin . PHP_EOL;
+        echo 'Money won: €' . $moneyWonTotalSpin . PHP_EOL;
     }
-    echo 'Your balance: ' . $wallet . PHP_EOL;
+    echo 'Your balance: €' . number_format($wallet, 2) . PHP_EOL;
 
     $choice = (string)readline('Spin? (Enter/any): ');
     if (strlen($choice) === 0)  {
@@ -116,5 +121,6 @@ while (true) {
         exit;
     }
 }
+
 
 
